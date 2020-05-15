@@ -1,5 +1,5 @@
 ---
-- hosts: backend
+- hosts: all
   gather_facts: false
   become: true
   tasks:
@@ -17,3 +17,4 @@
     service:
       name: nginx
       state: started
+      enabled: yes
