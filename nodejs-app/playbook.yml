@@ -1,0 +1,41 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: false
+
+  vars:
+    nodejs_app_location: /var/www/html
+
+  tasks:
+  - name: add nodejs ppa
+    shell: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+  - name: Install nodejs and npm
+    apt:
+      pkg:
+        - nodejs
+      state: present
+
+  - name: Install forever nodejs package.
+    npm:
+      name: forever
+      global: yes
+      state: present
+
+  - name: Ensure node.js app folder exists
+    file: "path={{ nodejs_app_location}} state=directory"
+
+  - name: Copy app files to server
+    copy: "src=app dest={{ nodejs_app_location }}"
+
+  - name: Install package.json dependancies
+    npm: "path={{ nodejs_app_location }}/app"
+
+  - name: check list of running node.js apps
+    command: forever list
+    register: forever_list
+    changed_when: false
+
+  - name: start nodejs application
+    command: "forever start {{ nodejs_app_location }}/app/app.js"
+    when: "forever_list.stdout.find(nodejs_app_location + '/app/app.js') == -1"
