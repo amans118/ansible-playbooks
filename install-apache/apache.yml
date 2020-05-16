@@ -13,7 +13,7 @@
 
     - name: Copy custom apache config files
       copy:
-        src: default.conf
+        src: ./conf/default.conf
         dest: /etc/apache2/sites-available/default.conf
         owner: root
         group: root
