@@ -16,7 +16,7 @@
 
         - name: Start and enable Apache service
           service:
-            name: apache2
+            name: httpd
             state: started
             enabled: yes
       when: ansible_os_family == 'RedHat'
